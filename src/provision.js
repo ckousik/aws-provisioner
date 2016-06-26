@@ -259,13 +259,8 @@ class Provisioner {
 
         await this.stateContainer.write(worker.workerType, state);
       } catch (stateWriteErr) {
-<<<<<<< HEAD
         debug('[alert-operator] failed to update state for %s: %s',
             worker.workerType, stateWriteErr.stack || stateWriteErr);
-=======
-        debug('[alert-operator] failed to update state for %s: %s', worker.workerType, stateWriteErr.stack
-          || stateWriteErr);
->>>>>>> 1bb0cc2... Bug 1244656-Bring back the kill all workers of a given worker type endpoint - Initial sketch
       }
 
       if (change > 0) {
