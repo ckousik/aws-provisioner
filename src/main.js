@@ -139,6 +139,7 @@ let load = base.loader({
           provisionerBaseUrl: cfg.server.publicUrl + '/v1',
           reportInstanceStarted: reportInstanceStarted,
           credentials: cfg.taskcluster.credentials,
+          pulseCredentials: cfg.pulse,
           dmsApiKey: cfg.deadmanssnitch.api.key,
           iterationSnitch: cfg.deadmanssnitch.iterationSnitch,
           ec2: ec2,
@@ -224,8 +225,8 @@ let load = base.loader({
   },
 
   provisioner: {
-    requires: ['cfg', 'awsManager', 'WorkerType', 'Secret', 'ec2', 'stateContainer', 'influx'],
-    setup: async ({cfg, awsManager, WorkerType, Secret, ec2, stateContainer, influx}) => {
+    requires: ['cfg', 'awsManager', 'WorkerType', 'Secret', 'ec2', 'stateContainer', 'influx', 'publisher'],
+    setup: async ({cfg, awsManager, WorkerType, Secret, ec2, stateContainer, influx, publisher}) => {
       let queue = new taskcluster.Queue({credentials: cfg.taskcluster.credentials});
 
       let provisioner = new provision.Provisioner({
@@ -240,6 +241,7 @@ let load = base.loader({
         dmsApiKey: cfg.deadmanssnitch.api.key,
         iterationSnitch: cfg.deadmanssnitch.iterationSnitch,
         stateContainer: stateContainer,
+        publisher: publisher,
       });
 
       try {

@@ -2,7 +2,8 @@
 /user-config.yml
 /node_modules/
 provisioner-test-*.pem
-
+lib
+test
 # Logs
 logs
 *.log
