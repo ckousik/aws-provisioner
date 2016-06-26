@@ -98,3 +98,50 @@ exchanges.declare({
   routingKeyBuilder: commonRoutingKeyBuilder,
   CCBuilder: commonCCBuilder,
 });
+
+exchanges.declare({
+  exchange: 'worker-type-terminate-instances-request',
+  name: 'workerTypeTerminateInstancesRequest', //Method to call on publisher
+  title: 'WorkerType Terminate All Instances',
+  description: [
+    'When the API endpoint for terminating all instances of a workerType',
+    'is invoked, a message will be published to this exchange.',
+  ].join('\n'),
+  routingKey: commonRoutingKey,
+  schema: 'worker-type-message.json#',
+  messageBuilder: commonMessageBuilder,
+  routingKeyBuilder: commonRoutingKeyBuilder,
+  CCBuilder: commonCCBuilder,
+});
+
+exchanges.declare({
+  exchange: 'worker-type-terminate-instances-success',
+  name: 'workerTypeTerminateInstancesSuccess', //Method to call on publisher
+  title: 'WorkerType Terminate All Instances Success',
+  description: [
+    'When the API endpoint for terminating all instances of a workerType',
+    'is invoked, a message will be published to this exchange if the instances',
+    'are successfully terminated',
+  ].join('\n'),
+  routingKey: commonRoutingKey,
+  schema: 'worker-type-message.json#',
+  messageBuilder: commonMessageBuilder,
+  routingKeyBuilder: commonRoutingKeyBuilder,
+  CCBuilder: commonCCBuilder,
+});
+
+exchanges.declare({
+  exchange: 'worker-type-terminate-instances-failure',
+  name: 'workerTypeTerminateInstancesFailure', //Method to call on publisher
+  title: 'WorkerType Terminate All Instances Failure',
+  description: [
+    'When the API endpoint for terminating all instances of a workerType',
+    'is invoked, a message will be published to this exchange if the instances',
+    'are not successfully terminated',
+  ].join('\n'),
+  routingKey: commonRoutingKey,
+  schema: 'worker-type-message.json#',
+  messageBuilder: commonMessageBuilder,
+  routingKeyBuilder: commonRoutingKeyBuilder,
+  CCBuilder: commonCCBuilder,
+});

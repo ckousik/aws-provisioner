@@ -91,6 +91,10 @@ class Provisioner {
       runs: 0,
       consecFail: 0,
     };
+
+    assert(cfg.publisher);
+    this.publisher = cfg.publisher;
+    this.setupListener();
   }
 
   /**
@@ -255,7 +259,8 @@ class Provisioner {
 
         await this.stateContainer.write(worker.workerType, state);
       } catch (stateWriteErr) {
-        debug('[alert-operator] failed to update state for %s: %s', worker.workerType, stateWriteErr.stack || stateWriteErr);
+        debug('[alert-operator] failed to update state for %s: %s', worker.workerType, stateWriteErr.stack
+          || stateWriteErr);
       }
 
       if (change > 0) {
@@ -380,6 +385,27 @@ class Provisioner {
     });
 
     return change;
+  }
+
+  setupListener() {
+    let that = this;
+    this.listener = new taskcluster.PulseListener(cfg.pulse);
+    this.provsionerEvents = new taskcluster.AwsProvisionerEvents();
+    this.listener.bind(provisionerEvents.terminateInstancesRequest({provisionerId: this.provisionerId}));
+    this.listener.on('message', async (message) => {
+      let wt = message.payload.workerType;
+      assert(wt);
+      try {
+        await that.awsManager.killByName(wt);
+        await that.publisher.terminateInstancesSuccess({
+          workerType: wt,
+        });
+      } catch (err) {
+        await that.publisher.terminateInstancesFailure({
+          workerType: wt,
+        });
+      }
+    });
   }
 
 }
