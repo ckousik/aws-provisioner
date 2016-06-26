@@ -259,8 +259,13 @@ class Provisioner {
 
         await this.stateContainer.write(worker.workerType, state);
       } catch (stateWriteErr) {
+<<<<<<< HEAD
         debug('[alert-operator] failed to update state for %s: %s',
             worker.workerType, stateWriteErr.stack || stateWriteErr);
+=======
+        debug('[alert-operator] failed to update state for %s: %s', worker.workerType, stateWriteErr.stack
+          || stateWriteErr);
+>>>>>>> c78103d826c9591ee18452e50ac580a2203876f4
       }
 
       if (change > 0) {
