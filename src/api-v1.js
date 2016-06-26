@@ -930,31 +930,16 @@ api.declare({
   ].join('\n'),
 }, async function (req, res) {
   let workerType = req.params.workerType;
-  let listener = new taskcluster.PulseListener(this.pulseCredentials);
   try {
-    
-    let provisionerEvents = new taskcluster.AwsProvisionerEvents();
-    listener.bind(provisionerEvents.terminateInstancesSuccess({provisionerId: this.provisionerId}));
-    listener.bind(provisionerEvents.terminateInstancesFailure({provisionerId: this.provisionerId}));
-    
-    await this.publisher.terminateAllInstancesRequest({workerType});
-
-    let success = await new Promise((resolve, reject) => {
-      return listener.on('message', message => {
-        if (message.exchange === provisionerEvents.terminateInstancesSuccess()) {
-          return resolve(true);
-        }
-        return resolve(false);
-      }).on('error', reject);
-    });
-    
-    if (!success) {
-      throw new Error(`Could not shut down all instances of ${WorkerType}`);
+    if (!workerType) {
+      throw new Error('Worker Type cannot be undefined');
     }
-
+    let provisionerEvents = new taskcluster.AwsProvisionerEvents();
+    await this.publisher.terminateAllInstancesRequest({workerType});
+    
     res.reply({
       outcome: true,
-      message: `Successfully terminated all instances of ${workerType}`,
+      message: `Started termination of all instances of ${workerType}`,
     });
   } catch (err) {
     res.status(503).json({
